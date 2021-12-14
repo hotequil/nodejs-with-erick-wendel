@@ -1,0 +1,15 @@
+{
+    "name": "seventh",
+    "version": "1.0.0",
+    "description": "",
+    "main": "tests.js",
+    "scripts": {
+        "tests": "mocha tests.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "mocha": "^9.1.3"
+    }
+}
