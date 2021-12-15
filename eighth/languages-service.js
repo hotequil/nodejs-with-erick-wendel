@@ -19,6 +19,18 @@ class LanguagesService{
         return await this.#write({ ...language, id: ++this.#LAST_ID });
     }
 
+    async update(id, language){
+        const list = await this.list();
+        const idsList = list.map(item => item.id);
+        const languageIndex = idsList.indexOf(id);
+
+        if(languageIndex === -1) return messages.ERROR;
+
+        list.splice(languageIndex, 1, { id, ...language });
+
+        return await this.#writeAll(list, messages.UPDATED);
+    }
+
     async delete(id){
         const list = await this.list();
         const ids = list.map(item => item.id);

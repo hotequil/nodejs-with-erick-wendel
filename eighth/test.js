@@ -15,6 +15,12 @@ describe('LanguagesService', () => {
         ok(response === messages.SUCCESS);
     });
 
+    it('Should update a language when was called with id', async () => {
+        const response = await service.update(3, { name: 'Python', extension: '.py' });
+
+        ok(response === messages.UPDATED);
+    });
+
     it('Should remove a language when delete was called with a id', async () => {
         const response = await service.delete(4);
 
