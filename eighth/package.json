@@ -2,7 +2,7 @@
     "name": "eighth",
     "version": "1.0.0",
     "description": "",
-    "main": "test.js",
+    "main": "index.js",
     "scripts": {
         "test": "mocha -w"
     },
@@ -11,5 +11,8 @@
     "license": "ISC",
     "devDependencies": {
         "mocha": "^9.1.3"
+    },
+    "dependencies": {
+        "commander": "^8.3.0"
     }
 }

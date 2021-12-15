@@ -5,10 +5,6 @@ class LanguagesService{
     #NAME_FILE = 'database.json';
     #LAST_ID = null;
 
-    constructor(){
-        this.list().then(list => this.#LAST_ID = Math.max(...list.map(item => item.id)) || 0);
-    }
-
     async list(search = ''){
         const list = await this.#get();
 
@@ -16,6 +12,10 @@ class LanguagesService{
     }
 
     async create(language){
+        const list = await this.list();
+
+        this.#LAST_ID = Math.max(...list.map(item => item.id)) || 0;
+
         return await this.#write({ ...language, id: ++this.#LAST_ID });
     }
 
@@ -24,7 +24,7 @@ class LanguagesService{
         const idsList = list.map(item => item.id);
         const languageIndex = idsList.indexOf(id);
 
-        if(languageIndex === -1) return messages.ERROR;
+        if(languageIndex === -1) throw new Error(messages.ERROR);
 
         list.splice(languageIndex, 1, { id, ...language });
 
@@ -36,7 +36,7 @@ class LanguagesService{
         const ids = list.map(item => item.id);
         const positionId = ids.indexOf(id);
 
-        if(positionId < 0) return messages.ERROR;
+        if(positionId < 0) throw new Error(messages.ERROR);
 
         list.splice(positionId, 1);
 
