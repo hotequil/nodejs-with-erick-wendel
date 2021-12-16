@@ -1,7 +1,11 @@
-class Context{
+const CRUD = require("../interfaces/crud");
+
+class Context extends CRUD{
     #database = null;
 
     constructor(strategy){
+        super();
+
         this.#database = strategy;
     }
 
