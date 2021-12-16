@@ -24,6 +24,10 @@ class Context extends CRUD{
     delete(id){
         this.#database.delete(id);
     }
+
+    isConnected() {
+        return this.#database.isConnected();
+    }
 }
 
 module.exports = Context;

@@ -16,6 +16,10 @@ class CRUD{
     delete(...args){
         throw new NotImplementedError(args);
     }
+
+    isConnected(){
+        throw new NotImplementedError();
+    }
 }
 
 module.exports = CRUD;
