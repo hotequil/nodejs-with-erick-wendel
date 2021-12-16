@@ -1,0 +1,12 @@
+{
+    "name": "nineth",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./src/strategy.js",
+    "scripts": {
+        "dev": "node ."
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}
