@@ -21,8 +21,8 @@ class Context extends CRUD{
         return await this.#database.update(id, item);
     }
 
-    delete(id){
-        this.#database.delete(id);
+    async delete(id){
+        return await this.#database.delete(id);
     }
 
     async isConnected() {

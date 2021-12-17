@@ -43,4 +43,14 @@ describe('Postgres', function(){
 
         notDeepEqual(lastLanguage, LANGUAGE_TO_UPDATE);
     });
+
+    it('Should remove a language when was called with id', async () => {
+        const [firstLanguage] = await context.read();
+
+        await context.delete(firstLanguage.id);
+
+        const [newFirstLanguage] = await context.read();
+
+        notDeepEqual(firstLanguage, newFirstLanguage);
+    });
 });

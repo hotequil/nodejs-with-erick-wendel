@@ -24,6 +24,10 @@ class Postgres extends CRUD{
         return await this.#model.update(language, { where: { id } });
     }
 
+    async delete(id){
+        return await this.#model.destroy({ where: { id } });
+    }
+
     async isConnected() {
         try{
             await this.#driver.authenticate();
