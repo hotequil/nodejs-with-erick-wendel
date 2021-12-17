@@ -48,3 +48,29 @@ docker run \
 docker exec -it mongodb \
     mongo --host localhost -u admin -p 12345678 --authenticationDatabase admin \
     --eval "db.getSiblingDB('languages').createUser({ user: 'hotequil', pwd: '123456789', roles: [{ role: 'readWrite', db: 'languages' }] })"
+
+docker exec -it bd13446d675c mongo -u hotequil -p '123456789' --authenticationDatabase languages
+
+show dbs
+
+use languages
+
+show collections
+
+db.languages.insert({ name: 'test' })
+
+db.languages.find()
+
+db.languages.find().pretty()
+
+db.languages.count()
+
+db.languages.findOne()
+
+db.languages.find().limit(10).sort({ name: -1 })
+
+db.languages.find({}, { name: 1, _id: 0 })
+
+db.languages.update({ _id: ObjectId("61bd1a83aa24cd2e68970927") }, { $set: { name: 'test2' } })
+
+db.languages.remove({ _id: ObjectId("61bd1a83aa24cd2e68970927") })
