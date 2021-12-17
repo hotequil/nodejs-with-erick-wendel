@@ -20,6 +20,10 @@ class CRUD{
     isConnected(){
         throw new NotImplementedError();
     }
+
+    connect(){
+        throw new NotImplementedError();
+    }
 }
 
 module.exports = CRUD;

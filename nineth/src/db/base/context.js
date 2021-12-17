@@ -9,8 +9,8 @@ class Context extends CRUD{
         this.#database = strategy;
     }
 
-    create(item){
-        this.#database.create(item);
+    async create(item){
+        return await this.#database.create(item);
     }
 
     read(search){
@@ -25,8 +25,12 @@ class Context extends CRUD{
         this.#database.delete(id);
     }
 
-    isConnected() {
-        return this.#database.isConnected();
+    async isConnected() {
+        return await this.#database.isConnected();
+    }
+
+    async connect() {
+        await this.#database.connect();
     }
 }
 

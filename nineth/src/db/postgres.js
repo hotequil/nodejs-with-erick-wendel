@@ -8,13 +8,12 @@ class Postgres extends CRUD{
 
     constructor(){
         super();
-
-        this.#connect();
-        this.#defineModel();
     }
 
-    create(item){
-        console.log(`Created item in Postgres: ${JSON.stringify(item)}`);
+    async create(language){
+        const { dataValues } = await this.#model.create(language);
+
+        return dataValues;
     }
 
     async isConnected() {
@@ -29,13 +28,15 @@ class Postgres extends CRUD{
         }
     }
 
-    #connect(){
+    async connect(){
         this.#driver = new Sequelize(
             this.#tableName,
             'hotequil',
             '12345678',
             { host: 'localhost', dialect: 'postgres', quoteIdentifiers: false, operatorsAliases: false }
         );
+
+        await this.#defineModel();
     }
 
     async #defineModel(){
