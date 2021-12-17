@@ -16,6 +16,10 @@ class Postgres extends CRUD{
         return dataValues;
     }
 
+    async read(search = {}){
+        return await this.#model.findAll({ where: search, raw: true });
+    }
+
     async isConnected() {
         try{
             await this.#driver.authenticate();
