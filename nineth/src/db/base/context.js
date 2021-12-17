@@ -17,8 +17,8 @@ class Context extends CRUD{
         return await this.#database.read(search);
     }
 
-    update(id, item){
-        this.#database.update(id, item);
+    async update(id, item){
+        return await this.#database.update(id, item);
     }
 
     delete(id){

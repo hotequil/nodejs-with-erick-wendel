@@ -20,6 +20,10 @@ class Postgres extends CRUD{
         return await this.#model.findAll({ where: search, raw: true });
     }
 
+    async update(id, language){
+        return await this.#model.update(language, { where: { id } });
+    }
+
     async isConnected() {
         try{
             await this.#driver.authenticate();
