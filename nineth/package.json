@@ -4,9 +4,18 @@
     "description": "",
     "main": "./src/strategy.js",
     "scripts": {
-        "dev": "node ."
+        "dev": "node .",
+        "test": "mocha ./src/tests/*.test.js"
     },
     "keywords": [],
     "author": "",
-    "license": "ISC"
+    "license": "ISC",
+    "dependencies": {
+        "pg": "^8.7.1",
+        "pg-hstore": "^2.3.4",
+        "sequelize": "^6.12.0-beta.3"
+    },
+    "devDependencies": {
+        "mocha": "^9.1.3"
+    }
 }

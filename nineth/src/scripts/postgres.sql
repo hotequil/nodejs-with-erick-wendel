@@ -10,6 +10,8 @@ INSERT INTO languages (name, extension) VALUES ('JavaScript', '.js'), ('Ruby', '
 
 SELECT * FROM languages;
 
+SELECT name FROM languages;
+
 SELECT * FROM languages WHERE name='JavaScript';
 
 UPDATE languages SET name='C#', extension='.cs' WHERE id=2;
