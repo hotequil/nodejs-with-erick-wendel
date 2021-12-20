@@ -1,15 +1,19 @@
-const CRUD = require('./interfaces/crud');
+const CRUD = require('../interfaces/crud');
 const mongoose = require('mongoose');
-const { readyState } = require('./enums/mongo');
+const { readyState } = require('../enums/mongo');
 
 class Mongo extends CRUD{
     #model = null;
+    #connection = null;
 
-    constructor(){
+    constructor(connection, model){
         super();
+
+        this.#connection = connection;
+        this.#model = model;
     }
 
-    async connect(){
+    static async connect(){
         return await new Promise(resolve => {
             mongoose.connect(
                 'mongodb://hotequil:123456789@localhost:27017/languages',
@@ -20,15 +24,13 @@ class Mongo extends CRUD{
             mongoose.connection.once('open', () => {
                 console.log('Database running');
 
-                resolve();
+                resolve(mongoose.connection);
             });
-
-            this.#createModel();
         })
     }
 
     async isConnected() {
-        return await new Promise(resolve => resolve(mongoose.connection.readyState === readyState.CONNECTED));
+        return await new Promise(resolve => resolve(this.#connection.readyState === readyState.CONNECTED));
     }
 
     async create(language){
@@ -45,26 +47,6 @@ class Mongo extends CRUD{
 
     async delete(id){
         return await this.#model.deleteOne({ _id: id });
-    }
-
-    #createModel(){
-        this.#model = mongoose.model(
-            'languages',
-            new mongoose.Schema({
-                name: {
-                    type: String,
-                    required: true
-                },
-                extension: {
-                    type: String,
-                    required: true
-                },
-                insertedAt: {
-                    type: Date,
-                    default: new Date()
-                }
-            })
-        );
     }
 }
 

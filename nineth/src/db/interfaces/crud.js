@@ -21,7 +21,7 @@ class CRUD{
         throw new NotImplementedError();
     }
 
-    connect(){
+    static connect(){
         throw new NotImplementedError();
     }
 }
