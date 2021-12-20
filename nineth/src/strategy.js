@@ -1,6 +1,6 @@
 const Context = require('./db/base/context');
 const Mongo = require('./db/mongo/mongo');
-const Postgres = require('./db/postgres');
+const Postgres = require('./db/postgres/postgres');
 const mongoContext = new Context(new Mongo());
 const postgresContext = new Context(new Postgres());
 

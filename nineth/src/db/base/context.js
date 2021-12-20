@@ -28,10 +28,6 @@ class Context extends CRUD{
     async isConnected() {
         return await this.#database.isConnected();
     }
-
-    async connect() {
-        await this.#database.connect();
-    }
 }
 
 module.exports = Context;

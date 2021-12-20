@@ -1,13 +1,19 @@
 const { ok, deepEqual, notDeepEqual } = require('assert');
-const Postgres = require('../db/postgres');
+const Postgres = require('../db/postgres/postgres');
 const Context = require('../db/base/context.js');
-const context = new Context(new Postgres());
+let context = null;
+const schema = require('../db/postgres/schemas/languages');
 const LANGUAGE_TO_CREATE = { name: 'Rust', extension: '.rs' };
 const LANGUAGE_TO_UPDATE = { name: 'Go', extension: '.go' };
 
 describe('Postgres', function(){
     this.timeout(Infinity);
-    this.beforeAll(async () => await context.connect());
+
+    this.beforeAll(async () => {
+        const { connection, model } = await Postgres.connect(schema);
+
+        context = new Context(new Postgres(connection, model));
+    });
 
     it('Postgres should connect when init', async () => {
         const isConnected = await context.isConnected();

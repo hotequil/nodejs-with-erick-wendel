@@ -21,11 +21,7 @@ class Mongo extends CRUD{
                 error => error ? console.error('Connection error', error) : null
             );
 
-            mongoose.connection.once('open', () => {
-                console.log('Database running');
-
-                resolve(mongoose.connection);
-            });
+            mongoose.connection.once('open', () => resolve(mongoose.connection));
         })
     }
 
