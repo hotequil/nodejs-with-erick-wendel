@@ -43,6 +43,10 @@ class Mongo extends CRUD{
         return await this.#model.updateOne({ _id: id }, { $set: data });
     }
 
+    async delete(id){
+        return await this.#model.deleteOne({ _id: id });
+    }
+
     #createModel(){
         this.#model = mongoose.model(
             'languages',

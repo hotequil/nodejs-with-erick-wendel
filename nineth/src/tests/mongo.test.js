@@ -49,4 +49,11 @@ describe('Mongo', function(){
 
         deepEqual(LANGUAGE_TO_UPDATE, { name, extension });
     });
+
+    it('Should delete a language when was called with id', async () => {
+        const quantityToDelete = 1;
+        const result = await context.delete(idToUpdate);
+
+        ok(quantityToDelete === result.deletedCount);
+    });
 });
