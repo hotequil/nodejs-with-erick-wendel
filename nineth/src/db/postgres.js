@@ -16,8 +16,8 @@ class Postgres extends CRUD{
         return dataValues;
     }
 
-    async read(search){
-        return await this.#model.findAll({ where: search, raw: true });
+    async read(where, offset, limit){
+        return await this.#model.findAll({ where, offset, limit, raw: true });
     }
 
     async update(id, language){
