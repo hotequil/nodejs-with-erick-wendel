@@ -21,4 +21,12 @@ describe('Api', function(){
 
         ok(list.length === limit);
     });
+
+    it('Should return the correct language when was called with a name', async () => {
+        const name = 'JavaScript';
+        const { payload } = await app.inject({ method: HTTPMethod.GET, url: `/languages?name=${name}` });
+        const [{ name: currentName }] = JSON.parse(payload);
+
+        ok(name === currentName);
+    });
 });
