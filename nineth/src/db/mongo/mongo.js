@@ -1,6 +1,6 @@
 const CRUD = require('../interfaces/crud');
 const mongoose = require('mongoose');
-const { readyState } = require('../enums/mongo');
+const { isConnected } = require('../../helpers/mongo');
 
 class Mongo extends CRUD{
     #model = null;
@@ -15,18 +15,26 @@ class Mongo extends CRUD{
 
     static async connect(){
         return await new Promise(resolve => {
+            const { connection } = mongoose;
+
+            if(isConnected(connection)){
+                resolve(connection);
+
+                return;
+            }
+
             mongoose.connect(
                 'mongodb://hotequil:123456789@localhost:27017/languages',
                 { useNewUrlParser: true },
                 error => error ? console.error('Connection error', error) : null
             );
 
-            mongoose.connection.once('open', () => resolve(mongoose.connection));
+            connection.once('open', () => resolve(connection));
         })
     }
 
     async isConnected() {
-        return await new Promise(resolve => resolve(this.#connection.readyState === readyState.CONNECTED));
+        return await new Promise(resolve => resolve(isConnected(this.#connection)));
     }
 
     async create(language){
