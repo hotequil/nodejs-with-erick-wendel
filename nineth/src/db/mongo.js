@@ -35,6 +35,10 @@ class Mongo extends CRUD{
         return await this.#model.create(language);
     }
 
+    async read(search, skip, limit){
+        return await this.#model.find(search).skip(skip).limit(limit);
+    }
+
     #createModel(){
         this.#model = mongoose.model(
             'languages',
