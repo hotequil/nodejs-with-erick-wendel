@@ -1,4 +1,5 @@
 const CRUD = require("../interfaces/crud");
+const { isObject } = require("../../helpers/manipulate");
 
 class Context extends CRUD{
     #database = null;
@@ -13,7 +14,12 @@ class Context extends CRUD{
         return await this.#database.create(item);
     }
 
-    async read(search = {}, page = 0, limit = 1000){
+    async read(search, page, limit){
+        page = parseInt(page) || 0;
+        limit = parseInt(limit) || 1000;
+
+        if(!isObject(search)) search = {};
+
         return await this.#database.read(search, page, limit);
     }
 

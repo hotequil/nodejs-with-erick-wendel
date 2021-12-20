@@ -13,4 +13,12 @@ describe('Api', function(){
         ok(Array.isArray(JSON.parse(payload)));
         deepEqual(statusCode, StatusCode.SuccessOK);
     });
+
+    it('Should return fifteen languages when entering at route with limit', async () => {
+        const limit = 15;
+        const { payload } = await app.inject({ method: HTTPMethod.GET, url: `/languages?limit=${limit}` });
+        const list = JSON.parse(payload);
+
+        ok(list.length === limit);
+    });
 });

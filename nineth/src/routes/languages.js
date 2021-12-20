@@ -14,7 +14,21 @@ class Languages extends Base{
         return {
             path: '/languages',
             method: HTTPMethod.GET,
-            handler: () => this.#context.read()
+            handler: request => {
+                try{
+                    const { query } = request;
+                    const { page, limit } = query;
+
+                    delete query.page;
+                    delete query.limit;
+
+                    return this.#context.read(query, page, limit);
+                } catch(error){
+                    console.error(error);
+
+                    return 'Server error';
+                }
+            }
         }
     }
 }
