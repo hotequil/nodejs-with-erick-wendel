@@ -39,6 +39,10 @@ class Mongo extends CRUD{
         return await this.#model.find(search).skip(skip).limit(limit);
     }
 
+    async update(id, data){
+        return await this.#model.updateOne({ _id: id }, { $set: data });
+    }
+
     #createModel(){
         this.#model = mongoose.model(
             'languages',
