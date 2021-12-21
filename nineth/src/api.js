@@ -10,8 +10,12 @@ const Swagger = require('hapi-swagger');
 const Vision = require('@hapi/vision');
 const Inert = require('@hapi/inert');
 const Pack = require('../package');
+const Auth = require('./routes/auth');
+const { now } = require('./helpers/manipulate');
 
 const api = async () => {
+    if(!!app.info.started) return app;
+
     const connection = await Mongo.connect();
     const context = new Context(new Mongo(connection, languageSchema));
 
@@ -30,7 +34,11 @@ const api = async () => {
     ]);
 
     app.validator(Joi);
-    app.route(mapRoutes(new Languages(context), Languages.methods()));
+
+    app.route([
+        ...mapRoutes(new Languages(context), Languages.methods()),
+        ...mapRoutes(new Auth(now(true)), Auth.methods())
+    ]);
 
     await app.start();
 
