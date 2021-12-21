@@ -1,6 +1,7 @@
 const Base = require('./base');
 const { HTTPMethod } = require('http-method-enum');
 const Joi = require('joi');
+const Boom = require('@hapi/boom');
 
 class Languages extends Base{
     #context = null;
@@ -38,7 +39,7 @@ class Languages extends Base{
                 } catch(error){
                     console.error(error);
 
-                    return 'Server error';
+                    return Boom.internal();
                 }
             }
         }
@@ -62,7 +63,7 @@ class Languages extends Base{
                 } catch(error){
                     console.error(error);
 
-                    return 'Create error';
+                    return Boom.internal();
                 }
             }
         }
@@ -89,7 +90,30 @@ class Languages extends Base{
                 } catch(error){
                     console.error(error);
 
-                    return 'Update error';
+                    return Boom.internal();
+                }
+            }
+        }
+    }
+
+    delete(){
+        return {
+            path: '/languages/{id}',
+            method: HTTPMethod.DELETE,
+            config: {
+                validate: {
+                    params: {
+                        id: Joi.string().required()
+                    }
+                }
+            },
+            handler: ({ params }) => {
+                try{
+                    return this.#context.delete(params.id);
+                } catch(error){
+                    console.error(error);
+
+                    return Boom.internal();
                 }
             }
         }

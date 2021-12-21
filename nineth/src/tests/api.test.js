@@ -5,20 +5,19 @@ const api = require('../api');
 let app = null;
 const LANGUAGE_TO_CREATE = { name: 'TypeScript', extension: '.ts' };
 const INVALID_LANGUAGE_TO_CREATE = { name: 'Go' };
-let languageToEdit = null;
+let idToEdit = null;
 const LANGUAGE_UPDATE = { extension: '.php' };
+let idToDelete = null;
 
 describe('Api', function(){
     this.beforeAll(async () => {
         app = await api();
 
-        const response = await app.inject({
-            method: HTTPMethod.POST,
-            url: '/languages',
-            payload: LANGUAGE_TO_CREATE
-        });
+        const responseToEdit = await app.inject({ method: HTTPMethod.POST, url: '/languages', payload: LANGUAGE_TO_CREATE });
+        const responseToDelete = await app.inject({ method: HTTPMethod.POST, url: '/languages', payload: LANGUAGE_TO_CREATE });
 
-        languageToEdit = JSON.parse(response.payload);
+        idToEdit = JSON.parse(responseToEdit.payload)._id;
+        idToDelete = JSON.parse(responseToDelete.payload)._id;
     });
 
     it('Should get languages list when entering at route', async () => {
@@ -69,7 +68,7 @@ describe('Api', function(){
     it('Should update a language when entering at route', async () => {
         const response = await app.inject({
             method: HTTPMethod.PATCH,
-            url: `/languages/${languageToEdit._id}`,
+            url: `/languages/${idToEdit}`,
             payload: LANGUAGE_UPDATE
         });
 
@@ -84,6 +83,19 @@ describe('Api', function(){
             url: `/languages/123abc`,
             payload: LANGUAGE_UPDATE
         });
+
+        ok(response.statusCode === StatusCode.ServerErrorInternal);
+    });
+
+    it('Should delete a language when entering at route with id', async () => {
+        const response = await app.inject({ method: HTTPMethod.DELETE, url: `/languages/${idToDelete}` });
+        const { deletedCount } = JSON.parse(response.payload);
+
+        ok(response.statusCode === StatusCode.SuccessOK && !!deletedCount);
+    });
+
+    it("Shouldn't delete a language when entering at route with invalid id", async () => {
+        const response = await app.inject({ method: HTTPMethod.DELETE, url: '/languages/abc123' });
 
         ok(response.statusCode === StatusCode.ServerErrorInternal);
     });
