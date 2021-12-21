@@ -2,12 +2,24 @@ const { ok, deepEqual } = require('assert');
 const { HTTPMethod } = require('http-method-enum');
 const { StatusCode } = require('status-code-enum');
 const api = require('../api');
-let app;
+let app = null;
 const LANGUAGE_TO_CREATE = { name: 'TypeScript', extension: '.ts' };
 const INVALID_LANGUAGE_TO_CREATE = { name: 'Go' };
+let languageToEdit = null;
+const LANGUAGE_UPDATE = { extension: '.php' };
 
 describe('Api', function(){
-    this.beforeAll(async () => app = await api());
+    this.beforeAll(async () => {
+        app = await api();
+
+        const response = await app.inject({
+            method: HTTPMethod.POST,
+            url: '/languages',
+            payload: LANGUAGE_TO_CREATE
+        });
+
+        languageToEdit = JSON.parse(response.payload);
+    });
 
     it('Should get languages list when entering at route', async () => {
         const { statusCode, payload } = await app.inject({ method: HTTPMethod.GET, url: '/languages' });
@@ -52,5 +64,27 @@ describe('Api', function(){
         });
 
         ok(response.statusCode === StatusCode.ClientErrorBadRequest)
+    });
+
+    it('Should update a language when entering at route', async () => {
+        const response = await app.inject({
+            method: HTTPMethod.PATCH,
+            url: `/languages/${languageToEdit._id}`,
+            payload: LANGUAGE_UPDATE
+        });
+
+        const payload = JSON.parse(response.payload);
+
+        ok(response.statusCode === StatusCode.SuccessOK && !!payload.modifiedCount);
+    });
+
+    it("Shouldn't update a language with a invalid id when entering at route", async () => {
+        const response = await app.inject({
+            method: HTTPMethod.PATCH,
+            url: `/languages/123abc`,
+            payload: LANGUAGE_UPDATE
+        });
+
+        ok(response.statusCode === StatusCode.ServerErrorInternal);
     });
 });

@@ -21,7 +21,7 @@ class Languages extends Base{
                         page: Joi.number().integer().default(0),
                         limit: Joi.number().integer().default(1000),
                         name: Joi.string().min(2).max(50),
-                        extension: Joi.string().min(2).max(3)
+                        extension: Joi.string().min(2).max(4)
                     }
                 }
             },
@@ -52,7 +52,7 @@ class Languages extends Base{
                 validate: {
                     payload: {
                         name: Joi.string().min(2).max(50).required(),
-                        extension: Joi.string().min(2).max(3).required()
+                        extension: Joi.string().min(2).max(4).required()
                     }
                 }
             },
@@ -63,6 +63,33 @@ class Languages extends Base{
                     console.error(error);
 
                     return 'Create error';
+                }
+            }
+        }
+    }
+
+    update(){
+        return {
+            path: '/languages/{id}',
+            method: HTTPMethod.PATCH,
+            config: {
+                validate: {
+                    params: {
+                        id: Joi.string().required()
+                    },
+                    payload: {
+                        name: Joi.string().min(2).max(50),
+                        extension: Joi.string().min(2).max(4)
+                    }
+                }
+            },
+            handler: ({ params, payload }) => {
+                try{
+                    return this.#context.update(params.id, payload);
+                } catch(error){
+                    console.error(error);
+
+                    return 'Update error';
                 }
             }
         }
