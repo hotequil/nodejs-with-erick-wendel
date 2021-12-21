@@ -17,6 +17,9 @@ class Languages extends Base{
             path: '/languages',
             method: HTTPMethod.GET,
             config: {
+                tags: ['api'],
+                description: 'Should list languages',
+                notes: 'Can use paginate, limit and search name or extension',
                 validate: {
                     query: {
                         page: Joi.number().integer().default(0),
@@ -50,6 +53,9 @@ class Languages extends Base{
             path: '/languages',
             method: HTTPMethod.POST,
             config: {
+                tags: ['api'],
+                description: 'Should create a new language',
+                notes: 'Needs to receive a name and extension',
                 validate: {
                     payload: {
                         name: Joi.string().min(2).max(50).required(),
@@ -74,6 +80,9 @@ class Languages extends Base{
             path: '/languages/{id}',
             method: HTTPMethod.PATCH,
             config: {
+                tags: ['api'],
+                description: 'Should update a existing language',
+                notes: 'Must have an id in params route and receive name or extension in body',
                 validate: {
                     params: {
                         id: Joi.string().required()
@@ -101,6 +110,9 @@ class Languages extends Base{
             path: '/languages/{id}',
             method: HTTPMethod.DELETE,
             config: {
+                tags: ['api'],
+                description: 'Should delete a language by id',
+                notes: 'Must receive an id at route params',
                 validate: {
                     params: {
                         id: Joi.string().required()
