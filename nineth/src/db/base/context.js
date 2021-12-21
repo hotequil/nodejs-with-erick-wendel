@@ -15,9 +15,6 @@ class Context extends CRUD{
     }
 
     async read(search, page, limit){
-        page = parseInt(page) || 0;
-        limit = parseInt(limit) || 1000;
-
         if(!isObject(search)) search = {};
 
         return await this.#database.read(search, page, limit);
