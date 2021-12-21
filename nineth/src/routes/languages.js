@@ -43,6 +43,30 @@ class Languages extends Base{
             }
         }
     }
+
+    create(){
+        return {
+            path: '/languages',
+            method: HTTPMethod.POST,
+            config: {
+                validate: {
+                    payload: {
+                        name: Joi.string().min(2).max(50).required(),
+                        extension: Joi.string().min(2).max(3).required()
+                    }
+                }
+            },
+            handler: request => {
+                try{
+                    return this.#context.create(request.payload);
+                } catch(error){
+                    console.error(error);
+
+                    return 'Create error';
+                }
+            }
+        }
+    }
 }
 
 module.exports = Languages;

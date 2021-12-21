@@ -3,6 +3,8 @@ const { HTTPMethod } = require('http-method-enum');
 const { StatusCode } = require('status-code-enum');
 const api = require('../api');
 let app;
+const LANGUAGE_TO_CREATE = { name: 'TypeScript', extension: '.ts' };
+const INVALID_LANGUAGE_TO_CREATE = { name: 'Go' };
 
 describe('Api', function(){
     this.beforeAll(async () => app = await api());
@@ -28,5 +30,27 @@ describe('Api', function(){
         const list = JSON.parse(payload);
 
         ok(!!list.length);
+    });
+
+    it('Should create a language when was entering at route', async () => {
+        const response = await app.inject({
+            method: HTTPMethod.POST,
+            url: '/languages',
+            payload: LANGUAGE_TO_CREATE
+        });
+
+        const id = JSON.parse(response.payload)._id;
+
+        ok(response.statusCode === StatusCode.SuccessOK && !!id);
+    });
+
+    it('Should return an error when try to create an invalid language', async () => {
+        const response = await app.inject({
+            method: HTTPMethod.POST,
+            url: '/languages',
+            payload: INVALID_LANGUAGE_TO_CREATE
+        });
+
+        ok(response.statusCode === StatusCode.ClientErrorBadRequest)
     });
 });
