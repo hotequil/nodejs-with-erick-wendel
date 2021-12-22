@@ -22,8 +22,8 @@ class Postgres extends CRUD{
         return await this.#model.findAll({ where, offset, limit, raw: true, order: [['id', 'ASC']] });
     }
 
-    async update(id, language){
-        return await this.#model.update(language, { where: { id } });
+    async update(id, language, upsert){
+        return await this.#model[upsert ? 'upsert' : 'update'](language, { where: { id } });
     }
 
     async delete(id){

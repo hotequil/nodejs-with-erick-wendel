@@ -3,20 +3,17 @@ const { HTTPMethod } = require('http-method-enum');
 const Joi = require('joi');
 const Boom = require('@hapi/boom');
 const JWT = require('jsonwebtoken');
-const { now } = require('../helpers/manipulate');
-
-const USER = {
-    username: 'test',
-    password: 'test'
-}
+const Password = require('../helpers/password');
 
 class Auth extends Base{
     #secret = null;
+    #database = null;
 
-    constructor(secret){
+    constructor(secret, database){
         super();
 
         this.#secret = secret;
+        this.#database = database;
     }
 
     login(){
@@ -35,12 +32,17 @@ class Auth extends Base{
                     }
                 }
             },
-            handler: request => {
+            handler: async request => {
                 const { username, password } = request.payload;
+                const [user] = await this.#database.read({ username });
 
-                if(username !== USER.username || password !== USER.password) return Boom.unauthorized();
+                if(!user) return Boom.unauthorized("User doesn't exist");
 
-                return { token: JWT.sign({ username, id: now() }, this.#secret) };
+                const match = await Password.compare(password, user.password);
+
+                if(!match) return Boom.unauthorized("Username or password is wrong");
+
+                return { token: JWT.sign({ username, id: user.id }, this.#secret) };
             }
         }
     }
