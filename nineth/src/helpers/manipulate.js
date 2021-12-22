@@ -8,4 +8,11 @@ const now = (isString = false) => {
     return isString ? time.toString() : time;
 };
 
-module.exports = { mapRoutes, isObject, now };
+const stringToBoolean = property => {
+    if(property === "false") return false;
+    if(property === "true") return true;
+
+    throw new Error("Isn't a correct string");
+}
+
+module.exports = { mapRoutes, isObject, now, stringToBoolean };

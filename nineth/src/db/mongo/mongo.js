@@ -24,7 +24,7 @@ class Mongo extends CRUD{
             }
 
             mongoose.connect(
-                'mongodb://hotequil:123456789@localhost:27017/languages',
+                process.env.MONGO_DB_URL,
                 { useNewUrlParser: true },
                 error => error ? console.error('Connection error', error) : null
             );

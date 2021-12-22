@@ -1,5 +1,6 @@
 const CRUD = require('../interfaces/crud');
 const Sequelize = require('sequelize');
+const { stringToBoolean } = require('../../helpers/manipulate');
 
 class Postgres extends CRUD{
     #connection = null;
@@ -43,11 +44,18 @@ class Postgres extends CRUD{
     }
 
     static async connect(schema){
+        const ssl = stringToBoolean(process.env.SSL_DB);
+
         const connection = new Sequelize(
-            schema.name,
-            'hotequil',
-            '12345678',
-            { host: 'localhost', dialect: 'postgres', quoteIdentifiers: false, logging: false }
+            process.env.POSTGRES_DB_URL,
+            {
+                host: 'localhost',
+                dialect: 'postgres',
+                quoteIdentifiers: false,
+                logging: false,
+                ssl,
+                dialectOptions: { ssl }
+            }
         );
 
         const model = connection.define(

@@ -1,5 +1,11 @@
+const { config } = require('dotenv');
+const { join } = require('path');
+const configPath = join(__dirname, '../config', `.env.${process.env.NODE_ENV || 'dev'}`);
+
+config({ path: configPath });
+
 const hapi = require('@hapi/hapi');
-const app = new hapi.Server({ port: 4000 });
+const app = new hapi.Server({ port: process.env.PORT });
 const Context = require('./db/base/context');
 const Mongo = require('./db/mongo/mongo');
 const languageSchema = require('./db/mongo/schemas/languages');
@@ -12,7 +18,6 @@ const Inert = require('@hapi/inert');
 const Pack = require('../package');
 const Auth = require('./routes/auth');
 const AuthJwt = require('hapi-auth-jwt2');
-const SECRET_KEY = 'HOTEQUIL';
 const Postgres = require('./db/postgres/postgres');
 const usersSchema = require('./db/postgres/schemas/users');
 
@@ -41,7 +46,7 @@ const api = async () => {
     ]);
 
     app.auth.strategy(AUTH_STRATEGY_NAME, 'jwt', {
-        key: SECRET_KEY,
+        key: process.env.JWT_SECRET_KEY,
         validate: async decoded => {
             const [user] = await contextUsersPostgres.read({ id: decoded?.id });
 
@@ -55,7 +60,7 @@ const api = async () => {
 
     app.route([
         ...mapRoutes(new Languages(context), Languages.methods()),
-        ...mapRoutes(new Auth(SECRET_KEY, contextUsersPostgres), Auth.methods())
+        ...mapRoutes(new Auth(process.env.JWT_SECRET_KEY, contextUsersPostgres), Auth.methods())
     ]);
 
     await app.start();
