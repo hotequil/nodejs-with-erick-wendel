@@ -2,6 +2,7 @@ const Base = require('./base');
 const { HTTPMethod } = require('http-method-enum');
 const Joi = require('joi');
 const Boom = require('@hapi/boom');
+const { headersValidation } = require('../helpers/auth');
 
 class Languages extends Base{
     #context = null;
@@ -21,6 +22,7 @@ class Languages extends Base{
                 description: 'Should list languages',
                 notes: 'Can use paginate, limit and search name or extension',
                 validate: {
+                    ...headersValidation(),
                     query: {
                         page: Joi.number().integer().default(0),
                         limit: Joi.number().integer().default(1000),
@@ -57,6 +59,7 @@ class Languages extends Base{
                 description: 'Should create a new language',
                 notes: 'Needs to receive a name and extension',
                 validate: {
+                    ...headersValidation(),
                     payload: {
                         name: Joi.string().min(2).max(50).required(),
                         extension: Joi.string().min(2).max(4).required()
@@ -84,6 +87,7 @@ class Languages extends Base{
                 description: 'Should update a existing language',
                 notes: 'Must have an id in params route and receive name or extension in body',
                 validate: {
+                    ...headersValidation(),
                     params: {
                         id: Joi.string().required()
                     },
@@ -114,6 +118,7 @@ class Languages extends Base{
                 description: 'Should delete a language by id',
                 notes: 'Must receive an id at route params',
                 validate: {
+                    ...headersValidation(),
                     params: {
                         id: Joi.string().required()
                     }

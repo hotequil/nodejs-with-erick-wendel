@@ -11,15 +11,18 @@ const Vision = require('@hapi/vision');
 const Inert = require('@hapi/inert');
 const Pack = require('../package');
 const Auth = require('./routes/auth');
-const { now } = require('./helpers/manipulate');
+const AuthJwt = require('hapi-auth-jwt2');
+const SECRET_KEY = 'HOTEQUIL';
 
 const api = async () => {
     if(!!app.info.started) return app;
 
     const connection = await Mongo.connect();
     const context = new Context(new Mongo(connection, languageSchema));
+    const AUTH_STRATEGY_NAME = 'auth-jwt';
 
     await app.register([
+        AuthJwt,
         Inert,
         Vision,
         {
@@ -33,11 +36,18 @@ const api = async () => {
         }
     ]);
 
+    app.auth.strategy(AUTH_STRATEGY_NAME, 'jwt', {
+        key: SECRET_KEY,
+        validate: () => ({ isValid: true })
+    });
+
+    app.auth.default(AUTH_STRATEGY_NAME);
+
     app.validator(Joi);
 
     app.route([
         ...mapRoutes(new Languages(context), Languages.methods()),
-        ...mapRoutes(new Auth(now(true)), Auth.methods())
+        ...mapRoutes(new Auth(SECRET_KEY), Auth.methods())
     ]);
 
     await app.start();

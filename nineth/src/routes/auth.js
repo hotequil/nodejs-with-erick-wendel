@@ -27,6 +27,7 @@ class Auth extends Base{
                 tags: ['api'],
                 description: 'Should make login and return token',
                 notes: 'Receive username and password',
+                auth: false,
                 validate: {
                     payload: {
                         username: Joi.string().required(),

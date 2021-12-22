@@ -8,20 +8,21 @@ const INVALID_LANGUAGE_TO_CREATE = { name: 'Go' };
 let idToEdit = null;
 const LANGUAGE_UPDATE = { extension: '.php' };
 let idToDelete = null;
+const { headersFake } = require('../helpers/auth');
 
 describe('Api', function(){
     this.beforeAll(async () => {
         app = await api();
 
-        const responseToEdit = await app.inject({ method: HTTPMethod.POST, url: '/languages', payload: LANGUAGE_TO_CREATE });
-        const responseToDelete = await app.inject({ method: HTTPMethod.POST, url: '/languages', payload: LANGUAGE_TO_CREATE });
+        const responseToEdit = await app.inject({ method: HTTPMethod.POST, url: '/languages', payload: LANGUAGE_TO_CREATE, ...headersFake() });
+        const responseToDelete = await app.inject({ method: HTTPMethod.POST, url: '/languages', payload: LANGUAGE_TO_CREATE, ...headersFake() });
 
         idToEdit = JSON.parse(responseToEdit.payload)._id;
         idToDelete = JSON.parse(responseToDelete.payload)._id;
     });
 
     it('Should get languages list when entering at route', async () => {
-        const { statusCode, payload } = await app.inject({ method: HTTPMethod.GET, url: '/languages' });
+        const { statusCode, payload } = await app.inject({ method: HTTPMethod.GET, url: '/languages', ...headersFake() });
 
         ok(Array.isArray(JSON.parse(payload)));
         deepEqual(statusCode, StatusCode.SuccessOK);
@@ -29,7 +30,7 @@ describe('Api', function(){
 
     it('Should return fifteen languages when entering at route with limit', async () => {
         const limit = 15;
-        const { payload } = await app.inject({ method: HTTPMethod.GET, url: `/languages?limit=${limit}` });
+        const { payload } = await app.inject({ method: HTTPMethod.GET, url: `/languages?limit=${limit}`, ...headersFake() });
         const list = JSON.parse(payload);
 
         ok(list.length === limit);
@@ -37,7 +38,7 @@ describe('Api', function(){
 
     it('Should return the correct language when was called with a name', async () => {
         const name = 'Script';
-        const { payload } = await app.inject({ method: HTTPMethod.GET, url: `/languages?name=${name}` });
+        const { payload } = await app.inject({ method: HTTPMethod.GET, url: `/languages?name=${name}`, ...headersFake() });
         const list = JSON.parse(payload);
 
         ok(!!list.length);
@@ -47,7 +48,8 @@ describe('Api', function(){
         const response = await app.inject({
             method: HTTPMethod.POST,
             url: '/languages',
-            payload: LANGUAGE_TO_CREATE
+            payload: LANGUAGE_TO_CREATE,
+            ...headersFake()
         });
 
         const id = JSON.parse(response.payload)._id;
@@ -59,7 +61,8 @@ describe('Api', function(){
         const response = await app.inject({
             method: HTTPMethod.POST,
             url: '/languages',
-            payload: INVALID_LANGUAGE_TO_CREATE
+            payload: INVALID_LANGUAGE_TO_CREATE,
+            ...headersFake()
         });
 
         ok(response.statusCode === StatusCode.ClientErrorBadRequest)
@@ -69,7 +72,8 @@ describe('Api', function(){
         const response = await app.inject({
             method: HTTPMethod.PATCH,
             url: `/languages/${idToEdit}`,
-            payload: LANGUAGE_UPDATE
+            payload: LANGUAGE_UPDATE,
+            ...headersFake()
         });
 
         const payload = JSON.parse(response.payload);
@@ -81,21 +85,22 @@ describe('Api', function(){
         const response = await app.inject({
             method: HTTPMethod.PATCH,
             url: `/languages/123abc`,
-            payload: LANGUAGE_UPDATE
+            payload: LANGUAGE_UPDATE,
+            ...headersFake()
         });
 
         ok(response.statusCode === StatusCode.ServerErrorInternal);
     });
 
     it('Should delete a language when entering at route with id', async () => {
-        const response = await app.inject({ method: HTTPMethod.DELETE, url: `/languages/${idToDelete}` });
+        const response = await app.inject({ method: HTTPMethod.DELETE, url: `/languages/${idToDelete}`, ...headersFake() });
         const { deletedCount } = JSON.parse(response.payload);
 
         ok(response.statusCode === StatusCode.SuccessOK && !!deletedCount);
     });
 
     it("Shouldn't delete a language when entering at route with invalid id", async () => {
-        const response = await app.inject({ method: HTTPMethod.DELETE, url: '/languages/abc123' });
+        const response = await app.inject({ method: HTTPMethod.DELETE, url: '/languages/abc123', ...headersFake() });
 
         ok(response.statusCode === StatusCode.ServerErrorInternal);
     });
