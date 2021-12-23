@@ -20,9 +20,13 @@ const Auth = require('./routes/auth');
 const AuthJwt = require('hapi-auth-jwt2');
 const Postgres = require('./db/postgres/postgres');
 const usersSchema = require('./db/postgres/schemas/users');
+const Utils = require('./routes/utils');
+let started = false;
 
 const api = async () => {
-    if(!!app.info.started) return app;
+    if(started) return app;
+
+    started = true;
 
     const connection = await Mongo.connect();
     const context = new Context(new Mongo(connection, languageSchema));
@@ -60,7 +64,8 @@ const api = async () => {
 
     app.route([
         ...mapRoutes(new Languages(context), Languages.methods()),
-        ...mapRoutes(new Auth(process.env.JWT_SECRET_KEY, contextUsersPostgres), Auth.methods())
+        ...mapRoutes(new Auth(process.env.JWT_SECRET_KEY, contextUsersPostgres), Auth.methods()),
+        ...mapRoutes(new Utils(), Utils.methods())
     ]);
 
     await app.start();
